@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym Tracker">
+<title>Gym Tracker</title>
+<style>
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #0F6E56;
+    --red: #E24B4A;
+    --red-light: #FBEAF0;
+    --red-dark: #A32D2D;
+    --blue: #3B4FC4;
+    --blue-light: #EEF0F8;
+    --bg: #F5F5F0;
+    --card: #FFFFFF;
+    --border: #E8E6DF;
+    --text: #1A1A1A;
+    --text-sec: #6B6B6B;
+    --text-ter: #A0A0A0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141414;
+      --card: #1E1E1E;
+      --border: #2E2E2E;
+      --text: #F0F0F0;
+      --text-sec: #A0A0A0;
+      --text-ter: #6B6B6B;
+      --green-light: #0D3327;
+      --red-light: #3A1515;
+      --blue-light: #1A1E3A;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    padding: 52px 16px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .header-left .title { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header-left .sub { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+  .streak-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--green-light); color: var(--green-dark);
+    font-size: 13px; font-weight: 600;
+    padding: 6px 12px; border-radius: 20px;
+  }
+  .content { padding: 14px 12px; }
+  .hint {
+    font-size: 11px; color: var(--text-ter);
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: 10px; padding: 8px 12px;
+    margin-bottom: 14px; text-align: center;
+  }
+  .month-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .month-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .month-name {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    margin-bottom: 10px;
+  }
+  .m-stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .ms {
+    border-radius: 8px; padding: 7px 4px; text-align: center;
+  }
+  .ms-hit { background: var(--green-light); }
+  .ms-abs { background: var(--red-light); }
+  .ms-rem { background: var(--bg); }
+  .ms-tot { background: var(--blue-light); }
+  .ms-val { font-size: 16px; font-weight: 700; }
+  .ms-hit .ms-val { color: var(--green-dark); }
+  .ms-abs .ms-val { color: var(--red-dark); }
+  .ms-rem .ms-val { color: var(--text-sec); }
+  .ms-tot .ms-val { color: var(--blue); }
+  .ms-label { font-size: 9px; color: var(--text-ter); margin-top: 2px; letter-spacing: 0.3px; }
+  .day-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .dl {
+    font-size: 9px; text-align: center; color: var(--text-ter);
+    padding-bottom: 4px; font-weight: 500;
+  }
+  .dl.sun { color: var(--red); opacity: 0.5; }
+  .dc {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text-ter);
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.08s, opacity 0.08s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .dc:active:not(.sun-cell):not(.empty) { transform: scale(0.88); opacity: 0.7; }
+  .dc.done { background: var(--green); border-color: var(--green-dark); color: #fff; font-weight: 600; }
+  .dc.absent { background: var(--red); border-color: var(--red-dark); color: #fff; font-weight: 600; }
+  .dc.today { border: 2px solid var(--green); font-weight: 700; }
+  .dc.today:not(.done):not(.absent) { color: var(--text); }
+  .dc.sun-cell { background: transparent; border-color: transparent; opacity: 0.2; cursor: default; }
+  .dc.empty { background: transparent; border-color: transparent; cursor: default; }
+  .legend {
+    display: flex; gap: 14px; justify-content: center;
+    margin-top: 16px; font-size: 11px; color: var(--text-sec);
+  }
+  .leg { display: flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="title">Gym Tracker 💪</div>
+    <div class="sub">Mon–Sat · Jun 21 – Dec 31, 2026</div>
+  </div>
+  <div class="streak-badge">🔥 <span id="streak-text">0 day streak</span></div>
+</div>
+
+<div class="content">
+  <div class="hint">Tap any Mon–Sat → 🟢 Done → 🔴 Absent → Clear</div>
+  <div class="month-grid" id="month-grid"></div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--green)"></div> Done</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--red)"></div> Absent</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--bg);border:1px solid var(--border)"></div> Not marked</div>
+    <div class="leg"><div class="leg-dot" style="background:transparent;border:2px solid var(--green)"></div> Today</div>
+  </div>
+</div>
+
+<script>
+const START = new Date(2026, 5, 21);
+const END   = new Date(2026, 11, 31);
+const TODAY = new Date();
+
+const MFULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS  = ['S','M','T','W','T','F','S'];
+
+function dk(d) { return `gym_v8_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`; }
+function isSun(d)   { return d.getDay() === 0; }
+function inRange(d) { return d >= START && d <= END; }
+function isGym(d)   { return inRange(d) && !isSun(d); }
+function isToday(d) { return d.toDateString() === TODAY.toDateString(); }
+
+let data = {};
+try { data = JSON.parse(localStorage.getItem('gym_v8') || '{}'); } catch(e) {}
+function save() { try { localStorage.setItem('gym_v8', JSON.stringify(data)); } catch(e) {} }
+
+function cycleState(k) {
+  if (!data[k])             data[k] = 'done';
+  else if (data[k]==='done') data[k] = 'absent';
+  else                       delete data[k];
+}
+
+function buildMonths() {
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+
+  let cur = new Date(START.getFullYear(), START.getMonth(), 1);
+  while (cur <= END) {
+    const yr = cur.getFullYear(), mo = cur.getMonth();
+    const dim = new Date(yr, mo+1, 0).getDate();
+    const first = new Date(yr, mo, 1).getDay();
+
+    let mHit=0, mAbs=0, mTotal=0;
+    for (let d=1; d<=dim; d++) {
+      const dt = new Date(yr, mo, d);
+      if (isGym(dt) && inRange(dt)) {
+        mTotal++;
+        const st = data[dk(dt)];
+        if (st==='done')   mHit++;
+        else if (st==='absent') mAbs++;
+      }
+    }
+    const mRem = mTotal - mHit - mAbs;
+
+    const card = document.createElement('div');
+    card.className = 'month-card';
+
+    // Month name
+    const nm = document.createElement('div');
+    nm.className = 'month-name';
+    nm.textContent = MFULL[mo] + ' ' + yr;
+    card.appendChild(nm);
+
+    // Stats row
+    const st = document.createElement('div');
+    st.className = 'm-stats';
+    st.innerHTML = `
+      <div class="ms ms-hit"><div class="ms-val">${mHit}</div><div class="ms-label">Hit</div></div>
+      <div class="ms ms-abs"><div class="ms-val">${mAbs}</div><div class="ms-label">Absent</div></div>
+      <div class="ms ms-rem"><div class="ms-val">${mRem}</div><div class="ms-label">Remaining</div></div>
+      <div class="ms ms-tot"><div class="ms-val">${mTotal}</div><div class="ms-label">Total</div></div>`;
+    card.appendChild(st);
+
+    // Day grid
+    const dg = document.createElement('div');
+    dg.className = 'day-grid';
+
+    DAYS.forEach((dl, i) => {
+      const l = document.createElement('div');
+      l.className = 'dl' + (i===0 ? ' sun' : '');
+      l.textContent = dl;
+      dg.appendChild(l);
+    });
+
+    for (let i=0; i<first; i++) {
+      const e = document.createElement('div');
+      e.className = 'dc empty';
+      dg.appendChild(e);
+    }
+
+    for (let d=1; d<=dim; d++) {
+      const dt = new Date(yr, mo, d);
+      const cell = document.createElement('div');
+      cell.className = 'dc';
+      cell.textContent = d;
+
+      if (!inRange(dt)) {
+        cell.classList.add('empty');
+      } else if (isSun(dt)) {
+        cell.classList.add('sun-cell');
+      } else {
+        const s = data[dk(dt)];
+        if (isToday(dt))   cell.classList.add('today');
+        if (s==='done')    cell.classList.add('done');
+        else if (s==='absent') cell.classList.add('absent');
+
+        cell.addEventListener('click', () => {
+          cycleState(dk(dt));
+          save();
+          buildMonths();
+          updateStreak();
+        });
+      }
+      dg.appendChild(cell);
+    }
+
+    card.appendChild(dg);
+    grid.appendChild(card);
+    cur.setMonth(cur.getMonth() + 1);
+  }
+}
+
+function updateStreak() {
+  let streak = 0;
+  let check = new Date(TODAY);
+  while (check >= START) {
+    if (isSun(check)) { check.setDate(check.getDate()-1); continue; }
+    if (data[dk(check)]==='done') { streak++; check.setDate(check.getDate()-1); }
+    else break;
+  }
+  document.getElementById('streak-text').textContent = streak + ' day streak';
+}
+
+buildMonths();
+updateStreak();
+</script>
+</body>
+</html>
