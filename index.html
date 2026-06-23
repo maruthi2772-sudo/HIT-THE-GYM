@@ -2,290 +2,1247 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Gym Tracker">
-<title>Gym Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F1E7">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Habit Forge — Logbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --green: #1D9E75;
-    --green-light: #E1F5EE;
-    --green-dark: #0F6E56;
-    --red: #E24B4A;
-    --red-light: #FBEAF0;
-    --red-dark: #A32D2D;
-    --blue: #3B4FC4;
-    --blue-light: #EEF0F8;
-    --bg: #F5F5F0;
-    --card: #FFFFFF;
-    --border: #E8E6DF;
-    --text: #1A1A1A;
-    --text-sec: #6B6B6B;
-    --text-ter: #A0A0A0;
+    --paper: #F6F1E7;
+    --paper2: #EFE7D8;
+    --paper-edge: #E2D8C2;
+    --ink: #1F1B16;
+    --ink-soft: #5C5448;
+    --ink-faint: #948B7C;
+    --rule: #D8CCB4;
+    --stamp-red: #C1432B;
+    --stamp-red-bg: rgba(193,67,43,0.10);
+    --stamp-teal: #2F6E62;
+    --stamp-teal-bg: rgba(47,110,98,0.10);
+    --stamp-graphite: #9A938A;
+    --stamp-graphite-bg: rgba(154,147,138,0.14);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #141414;
-      --card: #1E1E1E;
-      --border: #2E2E2E;
-      --text: #F0F0F0;
-      --text-sec: #A0A0A0;
-      --text-ter: #6B6B6B;
-      --green-light: #0D3327;
-      --red-light: #3A1515;
-      --blue-light: #1A1E3A;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { font-size: 16px; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(31,27,22,0.05) 1px, transparent 0);
+    background-size: 14px 14px;
+    color: var(--ink);
     min-height: 100vh;
-    padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100dvh;
+    padding-top: calc(var(--safe-top) + 64px);
+    padding-bottom: calc(var(--safe-bottom) + 28px);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+    overflow-x: hidden;
   }
-  .header {
-    position: sticky;
+
+  /* HEADER */
+  .app-header {
+    position: fixed;
     top: 0;
-    z-index: 10;
-    background: var(--bg);
-    padding: 52px 16px 12px;
+    left: 0; right: 0;
+    z-index: 100;
+    background: rgba(246,241,231,0.92);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 2px solid var(--ink);
+    padding: calc(var(--safe-top) + 12px) 16px 12px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-end;
-    border-bottom: 0.5px solid var(--border);
   }
-  .header-left .title { font-size: 22px; font-weight: 700; color: var(--text); }
-  .header-left .sub { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+
+  .app-logo {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .app-logo .sub {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* Ticket-stub streak badge */
   .streak-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--green-light); color: var(--green-dark);
-    font-size: 13px; font-weight: 600;
-    padding: 6px 12px; border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--paper2);
+    border: 1.5px dashed var(--ink);
+    border-radius: 3px;
+    padding: 6px 10px;
+    position: relative;
   }
-  .content { padding: 14px 12px; }
-  .hint {
-    font-size: 11px; color: var(--text-ter);
-    background: var(--card); border: 0.5px solid var(--border);
-    border-radius: 10px; padding: 8px 12px;
-    margin-bottom: 14px; text-align: center;
+  .streak-badge::before, .streak-badge::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--paper);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  .month-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .streak-badge::before { left: -4px; box-shadow: inset 1px 0 1px rgba(0,0,0,0.08); }
+  .streak-badge::after { right: -4px; box-shadow: inset -1px 0 1px rgba(0,0,0,0.08); }
+
+  .streak-num {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--stamp-red);
+    line-height: 1;
   }
-  .month-card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  .streak-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    line-height: 1.15;
   }
-  .month-name {
-    font-size: 15px; font-weight: 600; color: var(--text);
-    margin-bottom: 10px;
-  }
-  .m-stats {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-  .ms {
-    border-radius: 8px; padding: 7px 4px; text-align: center;
-  }
-  .ms-hit { background: var(--green-light); }
-  .ms-abs { background: var(--red-light); }
-  .ms-rem { background: var(--bg); }
-  .ms-tot { background: var(--blue-light); }
-  .ms-val { font-size: 16px; font-weight: 700; }
-  .ms-hit .ms-val { color: var(--green-dark); }
-  .ms-abs .ms-val { color: var(--red-dark); }
-  .ms-rem .ms-val { color: var(--text-sec); }
-  .ms-tot .ms-val { color: var(--blue); }
-  .ms-label { font-size: 9px; color: var(--text-ter); margin-top: 2px; letter-spacing: 0.3px; }
-  .day-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
-  .dl {
-    font-size: 9px; text-align: center; color: var(--text-ter);
-    padding-bottom: 4px; font-weight: 500;
-  }
-  .dl.sun { color: var(--red); opacity: 0.5; }
-  .dc {
-    aspect-ratio: 1;
+
+  /* MAIN */
+  .main { padding: 0 14px; max-width: 480px; margin: 0 auto; }
+
+  /* LEDGER CARD (pinned) */
+  .ledger-card {
+    background: var(--paper2);
+    border: 2px solid var(--ink);
     border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: var(--text-ter);
-    background: var(--bg);
-    border: 0.5px solid var(--border);
+    padding: 16px 16px 14px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .ledger-card::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .ledger-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .ledger-title .month-name { color: var(--ink); font-weight: 700; }
+
+  .ledger-sofar {
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .ledger-sofar span { color: var(--ink-soft); font-weight: 700; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 10px;
+  }
+  .stat-row:last-of-type { margin-bottom: 0; }
+
+  .stat-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--ink);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .stat-value {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .stat-value .hit { color: var(--stamp-red); }
+  .stat-value .total { color: var(--ink-faint); font-weight: 400; font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; }
+
+  .progress-track {
+    margin: 8px 0 14px;
+    height: 7px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-track:last-child { margin-bottom: 0; }
+  .progress-fill {
+    height: 100%;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 3px, transparent 3px, transparent 7px);
+  }
+  .progress-fill.gym { background-color: var(--stamp-red); }
+  .progress-fill.steps { background-color: var(--stamp-teal); }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 4px 2px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--rule) 0, var(--rule) 4px, transparent 4px, transparent 8px);
+  }
+
+  /* MONTH CARDS */
+  .month-card {
+    background: var(--paper2);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .month-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px;
     cursor: pointer;
-    transition: transform 0.08s, opacity 0.08s;
-    -webkit-user-select: none; user-select: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .dc:active:not(.sun-cell):not(.empty) { transform: scale(0.88); opacity: 0.7; }
-  .dc.done { background: var(--green); border-color: var(--green-dark); color: #fff; font-weight: 600; }
-  .dc.absent { background: var(--red); border-color: var(--red-dark); color: #fff; font-weight: 600; }
-  .dc.today { border: 2px solid var(--green); font-weight: 700; }
-  .dc.today:not(.done):not(.absent) { color: var(--text); }
-  .dc.sun-cell { background: transparent; border-color: transparent; opacity: 0.2; cursor: default; }
-  .dc.empty { background: transparent; border-color: transparent; cursor: default; }
-  .legend {
-    display: flex; gap: 14px; justify-content: center;
-    margin-top: 16px; font-size: 11px; color: var(--text-sec);
+  .month-header:active { background: rgba(31,27,22,0.04); }
+
+  .month-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-transform: uppercase;
   }
-  .leg { display: flex; align-items: center; gap: 5px; }
-  .leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .month-header-right {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .month-mini-stats {
+    display: flex;
+    gap: 4px;
+  }
+
+  .mini-pill {
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid currentColor;
+  }
+  .mini-pill.done { background: var(--stamp-red-bg); color: var(--stamp-red); }
+  .mini-pill.absent { background: var(--stamp-graphite-bg); color: var(--stamp-graphite); }
+
+  .chevron {
+    width: 16px; height: 16px;
+    color: var(--ink);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .month-card.open .chevron { transform: rotate(180deg); }
+
+  .month-body {
+    display: none;
+    border-top: 2px solid var(--ink);
+  }
+  .month-card.open .month-body { display: block; }
+
+  /* DAY GRID — ledger ticket rows */
+  .day-grid { padding: 6px 10px; }
+
+  .day-col-headers {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    gap: 6px;
+    padding: 6px 4px 6px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 4px;
+  }
+
+  .col-header {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+  .col-header:first-child { text-align: left; padding-left: 2px; }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 5px;
+    align-items: center;
+    border-bottom: 1px dotted var(--rule);
+    padding-bottom: 5px;
+  }
+  .day-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .day-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    padding-left: 2px;
+    line-height: 1.15;
+    font-family: 'Oswald', sans-serif;
+  }
+  .day-label .dow {
+    font-size: 0.56rem;
+    color: var(--ink-faint);
+    display: block;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .day-row.sunday .day-label { color: var(--ink-faint); }
+
+  .sunday-pill {
+    grid-column: 2 / 4;
+    text-align: center;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    padding: 7px;
+    border: 1px dashed var(--rule);
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* HABIT PILLS — stamp ticket style */
+  .habit-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border-radius: 3px;
+    border: 1.5px solid var(--rule);
+    background: var(--paper);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    min-height: 38px;
+    font-family: 'JetBrains Mono', monospace;
+    touch-action: none;
+    overflow: visible;
+  }
+
+  .habit-pill:active:not(.locked) { transform: scale(0.96); }
+
+  .habit-pill.done {
+    background: var(--stamp-red-bg);
+    border-color: var(--stamp-red);
+    color: var(--stamp-red);
+  }
+  .habit-pill.absent {
+    background: var(--stamp-graphite-bg);
+    border-color: var(--stamp-graphite);
+    color: var(--stamp-graphite);
+  }
+  .habit-pill.locked { cursor: not-allowed; }
+  .habit-pill.locked.done { opacity: 0.78; }
+  .habit-pill.locked.absent { opacity: 0.78; }
+
+  .lock-icon { font-size: 0.62rem; margin-left: 1px; }
+  .pill-emoji { font-size: 0.85rem; line-height: 1; }
+
+  /* Stamp slam animation */
+  @keyframes stamp-slam {
+    0%   { transform: scale(2.2) rotate(-14deg); opacity: 0; }
+    55%  { transform: scale(0.92) rotate(2deg); opacity: 1; }
+    75%  { transform: scale(1.06) rotate(-1deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .habit-pill.stamping .pill-emoji { animation: stamp-slam 0.32s cubic-bezier(.2,1.4,.4,1); display: inline-block; }
+
+  /* today highlight */
+  .day-row.today .day-label { color: var(--stamp-teal); }
+  .day-row.today .day-label .dow { color: var(--stamp-teal); }
+  .day-row.today { background: var(--stamp-teal-bg); margin-left: -6px; margin-right: -6px; padding-left: 6px; padding-right: 6px; border-radius: 3px; }
+
+  /* MONTH STAT BAR */
+  .month-stat-bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 10px 12px;
+    border-top: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    flex: 1;
+    min-width: 60px;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 3px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1px solid currentColor;
+  }
+  .stat-chip .chip-num { display: block; font-size: 1.05rem; line-height: 1.3; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .stat-chip.hit { background: var(--stamp-red-bg); color: var(--stamp-red); }
+  .stat-chip.absent { background: var(--stamp-graphite-bg); color: var(--stamp-graphite); }
+  .stat-chip.remaining { background: var(--stamp-teal-bg); color: var(--stamp-teal); }
+  .stat-chip.total { background: rgba(31,27,22,0.04); color: var(--ink-faint); }
+
+  /* ANALYTICS SECTION */
+  .analytics-section {
+    background: var(--paper2);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .analytics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .analytics-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .analytics-body {
+    display: none;
+    border-top: 2px solid var(--ink);
+    padding: 16px;
+  }
+  .analytics-section.open .analytics-body { display: block; }
+  .analytics-section.open .chevron { transform: rotate(180deg); }
+
+  .chart-wrap { margin-bottom: 22px; }
+  .chart-wrap:last-child { margin-bottom: 0; }
+  .chart-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    font-family: 'Oswald', sans-serif;
+  }
+  .chart-canvas-wrap {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 12px;
+  }
+
+  /* EMPTY STATE for no logbook entries yet */
+  .empty-hint {
+    text-align: center;
+    padding: 18px 10px;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* TOAST */
+  #toast-container {
+    position: fixed;
+    bottom: calc(var(--safe-bottom) + 22px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    width: 90%;
+    max-width: 340px;
+  }
+
+  .toast {
+    background: var(--ink);
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--paper);
+    text-align: center;
+    animation: toast-in 0.22s cubic-bezier(.34,1.56,.64,1) forwards;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .toast.out { animation: toast-out 0.18s ease forwards; }
+
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.94); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes toast-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(6px) scale(0.96); }
+  }
+
+  ::-webkit-scrollbar { width: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast { animation: none !important; }
+    .habit-pill { transition: none !important; }
+    .habit-pill.stamping .pill-emoji { animation: none !important; }
+    .progress-fill { transition: none !important; }
+  }
+
+  @media (max-width: 360px) {
+    .day-col-headers, .day-row { grid-template-columns: 34px 1fr 1fr; gap: 4px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <div class="title">Gym Tracker 💪</div>
-    <div class="sub">Mon–Sat · Jun 21 – Dec 31, 2026</div>
+<header class="app-header">
+  <div class="app-logo">Habit<span style="color:var(--stamp-red)">Forge</span><span class="sub">Daily Logbook</span></div>
+  <div class="streak-badge" id="streak-badge">
+    <span class="streak-num" id="streak-count">0</span>
+    <span class="streak-label">day<br>streak</span>
   </div>
-  <div class="streak-badge">🔥 <span id="streak-text">0 day streak</span></div>
-</div>
+</header>
 
-<div class="content">
-  <div class="hint">Tap any Mon–Sat → 🟢 Done → 🔴 Absent → Clear</div>
-  <div class="month-grid" id="month-grid"></div>
-  <div class="legend">
-    <div class="leg"><div class="leg-dot" style="background:var(--green)"></div> Done</div>
-    <div class="leg"><div class="leg-dot" style="background:var(--red)"></div> Absent</div>
-    <div class="leg"><div class="leg-dot" style="background:var(--bg);border:1px solid var(--border)"></div> Not marked</div>
-    <div class="leg"><div class="leg-dot" style="background:transparent;border:2px solid var(--green)"></div> Today</div>
+<main class="main">
+  <!-- Pinned ledger -->
+  <div class="ledger-card" id="ledger-card">
+    <div class="ledger-title">📍 This Month — <span class="month-name" id="pinned-month-name">—</span></div>
+    <div class="ledger-sofar" id="ledger-sofar">So far: <span id="pin-days-passed">0</span> of <span id="pin-days-total">0</span> training days</div>
+    <div class="stat-row">
+      <div class="stat-label">🏋️ Gym</div>
+      <div class="stat-value"><span class="hit" id="pin-gym-hit">0</span> <span class="total">of <span id="pin-gym-total">0</span> so far</span></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill gym" id="pin-gym-bar" style="width:0%"></div></div>
+    <div class="stat-row">
+      <div class="stat-label">👟 10K Steps</div>
+      <div class="stat-value"><span class="hit" id="pin-steps-hit">0</span> <span class="total">of <span id="pin-steps-total">0</span> so far</span></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill steps" id="pin-steps-bar" style="width:0%"></div></div>
   </div>
-</div>
+
+  <div class="section-divider">Logbook</div>
+
+  <!-- Month cards go here -->
+  <div id="months-container"></div>
+
+  <!-- Analytics -->
+  <div class="analytics-section" id="analytics-section">
+    <div class="analytics-header" onclick="toggleAnalytics()">
+      <div class="analytics-title">📊 Analytics</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="analytics-body" id="analytics-body">
+      <div class="chart-wrap">
+        <div class="chart-label">Gym Sessions per Month</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-monthly" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-label">Weekly Gym Totals</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-weekly" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap" style="margin-bottom:0">
+        <div class="chart-label">Cumulative Sessions vs Target</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-cumulative" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
 
 <script>
-const START = new Date(2026, 5, 21);
-const END   = new Date(2026, 11, 31);
-const TODAY = new Date();
+// ===================== CONFIG =====================
+// Dynamic range: ALWAYS starts today, never a hardcoded past/future date.
+// Tracks forward MONTHS_AHEAD full months from the current month so the
+// app never "runs out" of days and never needs manual date maintenance.
+const MONTHS_AHEAD = 6;
+const GYM_TARGET_PER_DAY_PORTION = 1; // each valid day contributes 1 to the rolling target
+const LOCK_MS = 3 * 60 * 60 * 1000; // 3 hours — per-pill, independent lock
+const STORAGE_KEY = 'habitforge_v2';
 
-const MFULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS  = ['S','M','T','W','T','F','S'];
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function dk(d) { return `gym_v8_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`; }
-function isSun(d)   { return d.getDay() === 0; }
-function inRange(d) { return d >= START && d <= END; }
-function isGym(d)   { return inRange(d) && !isSun(d); }
-function isToday(d) { return d.toDateString() === TODAY.toDateString(); }
+function startOfToday() { const d = new Date(); d.setHours(0,0,0,0); return d; }
 
+// START is always "today" — recomputed on every load, so the app can never
+// get stuck showing a stale hardcoded date again.
+const START = startOfToday();
+const END = (() => {
+  const d = new Date(START.getFullYear(), START.getMonth() + MONTHS_AHEAD + 1, 0);
+  d.setHours(0,0,0,0);
+  return d;
+})();
+
+// ===================== STATE =====================
 let data = {};
-try { data = JSON.parse(localStorage.getItem('gym_v8') || '{}'); } catch(e) {}
-function save() { try { localStorage.setItem('gym_v8', JSON.stringify(data)); } catch(e) {} }
+// data[dateStr] = { gym: null|'done'|'absent', gymTs: null|timestamp, steps: null|'done'|'absent', stepsTs: null|timestamp }
 
-function cycleState(k) {
-  if (!data[k])             data[k] = 'done';
-  else if (data[k]==='done') data[k] = 'absent';
-  else                       delete data[k];
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) data = JSON.parse(raw);
+  } catch(e) { data = {}; }
 }
 
-function buildMonths() {
-  const grid = document.getElementById('month-grid');
-  grid.innerHTML = '';
+function saveData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
 
-  let cur = new Date(START.getFullYear(), START.getMonth(), 1);
-  while (cur <= END) {
-    const yr = cur.getFullYear(), mo = cur.getMonth();
-    const dim = new Date(yr, mo+1, 0).getDate();
-    const first = new Date(yr, mo, 1).getDay();
+function getDay(ds) {
+  if (!data[ds]) data[ds] = { gym: null, gymTs: null, steps: null, stepsTs: null };
+  return data[ds];
+}
 
-    let mHit=0, mAbs=0, mTotal=0;
-    for (let d=1; d<=dim; d++) {
-      const dt = new Date(yr, mo, d);
-      if (isGym(dt) && inRange(dt)) {
-        mTotal++;
-        const st = data[dk(dt)];
-        if (st==='done')   mHit++;
-        else if (st==='absent') mAbs++;
-      }
-    }
-    const mRem = mTotal - mHit - mAbs;
+// ===================== DATE HELPERS =====================
+function dateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayStr() { return dateStr(new Date()); }
+function isWeekend(d) { return d.getDay() === 0; } // Sunday only — Sat is a valid training day
+function isValidDay(d) { return d >= START && d <= END && !isWeekend(d); }
 
-    const card = document.createElement('div');
-    card.className = 'month-card';
+function isLocked(ts) {
+  if (!ts) return false;
+  return Date.now() - ts >= LOCK_MS;
+}
+function locksInMs(ts) {
+  if (!ts) return null;
+  const remaining = LOCK_MS - (Date.now() - ts);
+  return remaining > 0 ? remaining : 0;
+}
+function formatLockTime(ms) {
+  const totalMins = Math.max(0, Math.floor(ms / 60000));
+  const hrs = Math.floor(totalMins / 60);
+  const mins = totalMins % 60;
+  if (hrs > 0) return `${hrs} hr${hrs!==1?'s':''} ${mins} min${mins!==1?'s':''}`;
+  return `${mins} min${mins!==1?'s':''}`;
+}
 
-    // Month name
-    const nm = document.createElement('div');
-    nm.className = 'month-name';
-    nm.textContent = MFULL[mo] + ' ' + yr;
-    card.appendChild(nm);
+// List of month [year, monthIndex] tuples actually in range, computed dynamically.
+function getMonthList() {
+  const months = [];
+  let y = START.getFullYear(), m = START.getMonth();
+  while (true) {
+    months.push([y, m]);
+    if (y === END.getFullYear() && m === END.getMonth()) break;
+    m++;
+    if (m > 11) { m = 0; y++; }
+  }
+  return months;
+}
 
-    // Stats row
-    const st = document.createElement('div');
-    st.className = 'm-stats';
-    st.innerHTML = `
-      <div class="ms ms-hit"><div class="ms-val">${mHit}</div><div class="ms-label">Hit</div></div>
-      <div class="ms ms-abs"><div class="ms-val">${mAbs}</div><div class="ms-label">Absent</div></div>
-      <div class="ms ms-rem"><div class="ms-val">${mRem}</div><div class="ms-label">Remaining</div></div>
-      <div class="ms ms-tot"><div class="ms-val">${mTotal}</div><div class="ms-label">Total</div></div>`;
-    card.appendChild(st);
+// ===================== TOAST =====================
+const toastContainer = document.getElementById('toast-container');
+function showToast(msg, duration = 2200) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  toastContainer.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 250);
+  }, duration);
+}
 
-    // Day grid
-    const dg = document.createElement('div');
-    dg.className = 'day-grid';
+// ===================== INTERACTION =====================
+// IMPORTANT: lock is scoped to ONE pill (gymTs / stepsTs are independent
+// per habit, per day). Marking Gym on a day never blocks Steps that same
+// day, and never affects any other day's pills.
+function cycleHabit(ds, type) {
+  const d = getDay(ds);
+  const valKey = type;
+  const tsKey = type + 'Ts';
 
-    DAYS.forEach((dl, i) => {
-      const l = document.createElement('div');
-      l.className = 'dl' + (i===0 ? ' sun' : '');
-      l.textContent = dl;
-      dg.appendChild(l);
-    });
+  if (d[tsKey] && isLocked(d[tsKey])) {
+    showToast('🔒 Locked — cannot be changed');
+    return;
+  }
 
-    for (let i=0; i<first; i++) {
-      const e = document.createElement('div');
-      e.className = 'dc empty';
-      dg.appendChild(e);
-    }
+  const label = type === 'gym' ? '🏋️ Gym' : '👟 10K Steps';
+  const current = d[valKey];
 
-    for (let d=1; d<=dim; d++) {
-      const dt = new Date(yr, mo, d);
-      const cell = document.createElement('div');
-      cell.className = 'dc';
-      cell.textContent = d;
+  if (current === null) {
+    d[valKey] = 'done';
+    d[tsKey] = Date.now(); // lock clock starts now, never resets until clear
+    showToast(`✅ ${label} — stamped Done`);
+  } else if (current === 'done') {
+    d[valKey] = 'absent';
+    showToast(`⬜ ${label} — marked Absent`);
+  } else {
+    d[valKey] = null;
+    d[tsKey] = null;
+    showToast(`Cleared`);
+  }
 
-      if (!inRange(dt)) {
-        cell.classList.add('empty');
-      } else if (isSun(dt)) {
-        cell.classList.add('sun-cell');
-      } else {
-        const s = data[dk(dt)];
-        if (isToday(dt))   cell.classList.add('today');
-        if (s==='done')    cell.classList.add('done');
-        else if (s==='absent') cell.classList.add('absent');
+  saveData();
+  refreshPill(ds, type, true);
+  updatePinnedCard();
+  updateAllStatBars();
+  updateMiniStats();
+  updateStreak();
+  if (analyticsOpen) rebuildCharts();
+}
 
-        cell.addEventListener('click', () => {
-          cycleState(dk(dt));
-          save();
-          buildMonths();
-          updateStreak();
-        });
-      }
-      dg.appendChild(cell);
-    }
+let longPressTimer = null;
+let longPressActive = false;
 
-    card.appendChild(dg);
-    grid.appendChild(card);
-    cur.setMonth(cur.getMonth() + 1);
+function setupPillEvents(el, ds, type) {
+  el.addEventListener('click', () => {
+    if (longPressActive) { longPressActive = false; return; }
+    cycleHabit(ds, type);
+  });
+
+  el.addEventListener('touchstart', () => {
+    longPressActive = false;
+    longPressTimer = setTimeout(() => { longPressActive = true; handleLongPress(ds, type); }, 500);
+  }, { passive: true });
+  el.addEventListener('touchend', () => clearTimeout(longPressTimer));
+  el.addEventListener('touchcancel', () => clearTimeout(longPressTimer));
+  el.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+
+  el.addEventListener('mousedown', () => {
+    longPressActive = false;
+    longPressTimer = setTimeout(() => { longPressActive = true; handleLongPress(ds, type); }, 500);
+  });
+  el.addEventListener('mouseup', () => clearTimeout(longPressTimer));
+  el.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+}
+
+function handleLongPress(ds, type) {
+  const d = getDay(ds);
+  const ts = d[type + 'Ts'];
+  if (!ts) return;
+  if (isLocked(ts)) { showToast('🔒 Already locked'); return; }
+  showToast(`🔒 Locks in ${formatLockTime(locksInMs(ts))}`, 2600);
+}
+
+// ===================== RENDER PILL =====================
+function refreshPill(ds, type, animate = false) {
+  const el = document.getElementById(`pill-${ds}-${type}`);
+  if (!el) return;
+
+  const d = getDay(ds);
+  const val = d[type];
+  const ts = d[type + 'Ts'];
+  const locked = ts ? isLocked(ts) : false;
+
+  el.className = 'habit-pill';
+  if (val === 'done') el.classList.add('done');
+  if (val === 'absent') el.classList.add('absent');
+  if (locked && val !== null) el.classList.add('locked');
+
+  const emoji = type === 'gym' ? '🏋️' : '👟';
+  const shortLabel = type === 'gym' ? 'Gym' : 'Steps';
+  const lockIcon = (locked && val !== null) ? '<span class="lock-icon">🔒</span>' : '';
+
+  if (val === 'done') {
+    el.innerHTML = `<span class="pill-emoji">✅</span>${lockIcon}`;
+  } else if (val === 'absent') {
+    el.innerHTML = `<span class="pill-emoji">⬜</span>${lockIcon}`;
+  } else {
+    el.innerHTML = `<span class="pill-emoji">${emoji}</span><span style="font-size:0.62rem;opacity:0.65">${shortLabel}</span>`;
+  }
+
+  if (animate) {
+    el.classList.add('stamping');
+    setTimeout(() => el.classList.remove('stamping'), 350);
   }
 }
 
+// ===================== BUILD UI =====================
+function buildMonthCard(year, month) {
+  const card = document.createElement('div');
+  card.className = 'month-card';
+  card.id = `month-card-${year}-${month}`;
+
+  const days = [];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dd = new Date(year, month, day);
+    if (dd >= START && dd <= END) days.push(dd);
+  }
+  if (days.length === 0) return null;
+
+  const header = document.createElement('div');
+  header.className = 'month-header';
+  header.innerHTML = `
+    <div class="month-title">${MONTHS[month]} ${year}</div>
+    <div class="month-header-right">
+      <div class="month-mini-stats" id="mini-stats-${year}-${month}"></div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  `;
+  header.addEventListener('click', () => toggleMonth(card));
+  card.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'month-body';
+
+  const grid = document.createElement('div');
+  grid.className = 'day-grid';
+  grid.innerHTML = `
+    <div class="day-col-headers">
+      <div class="col-header">Day</div>
+      <div class="col-header">🏋️ Gym</div>
+      <div class="col-header">👟 Steps</div>
+    </div>
+  `;
+
+  const today = todayStr();
+
+  days.forEach(d => {
+    const ds = dateStr(d);
+    const isSunday = d.getDay() === 0;
+    const isToday = ds === today;
+    const dayNum = d.getDate();
+    const dayName = DAYS_SHORT[d.getDay()];
+
+    const row = document.createElement('div');
+    row.className = 'day-row' + (isSunday ? ' sunday' : '') + (isToday ? ' today' : '');
+    row.id = `day-row-${ds}`;
+
+    if (isSunday) {
+      row.innerHTML = `
+        <div class="day-label">${dayNum}<span class="dow">${dayName}</span></div>
+        <div class="sunday-pill">Rest day</div>
+      `;
+    } else {
+      row.innerHTML = `
+        <div class="day-label">${dayNum}<span class="dow">${dayName}</span></div>
+        <div class="habit-pill" id="pill-${ds}-gym">
+          <span class="pill-emoji">🏋️</span><span style="font-size:0.62rem;opacity:0.65">Gym</span>
+        </div>
+        <div class="habit-pill" id="pill-${ds}-steps">
+          <span class="pill-emoji">👟</span><span style="font-size:0.62rem;opacity:0.65">Steps</span>
+        </div>
+      `;
+    }
+    grid.appendChild(row);
+  });
+
+  body.appendChild(grid);
+
+  const statBar = document.createElement('div');
+  statBar.className = 'month-stat-bar';
+  statBar.id = `stat-bar-${year}-${month}`;
+  body.appendChild(statBar);
+
+  card.appendChild(body);
+  return card;
+}
+
+function renderAllMonths() {
+  const container = document.getElementById('months-container');
+  container.innerHTML = '';
+
+  const months = getMonthList();
+  months.forEach(([y, m]) => {
+    const card = buildMonthCard(y, m);
+    if (card) container.appendChild(card);
+  });
+
+  // Open current month by default
+  const now = new Date();
+  const curCard = document.getElementById(`month-card-${now.getFullYear()}-${now.getMonth()}`);
+  if (curCard) {
+    curCard.classList.add('open');
+  } else {
+    const first = container.querySelector('.month-card');
+    if (first) first.classList.add('open');
+  }
+
+  setupAllPills();
+  updateAllStatBars();
+  updateMiniStats();
+}
+
+function setupAllPills() {
+  let d = new Date(START);
+  while (d <= END) {
+    if (!isWeekend(d)) {
+      const ds = dateStr(d);
+      ['gym', 'steps'].forEach(type => {
+        const el = document.getElementById(`pill-${ds}-${type}`);
+        if (el) {
+          setupPillEvents(el, ds, type);
+          refreshPill(ds, type, false);
+        }
+      });
+    }
+    d.setDate(d.getDate() + 1);
+  }
+}
+
+// ===================== TOGGLES =====================
+function toggleMonth(card) { card.classList.toggle('open'); }
+
+let analyticsOpen = false;
+function toggleAnalytics() {
+  const section = document.getElementById('analytics-section');
+  section.classList.toggle('open');
+  analyticsOpen = section.classList.contains('open');
+  if (analyticsOpen) rebuildCharts();
+}
+
+// ===================== STATS =====================
+function getMonthStats(year, month) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let gymDone = 0, gymAbsent = 0, stepsDone = 0, stepsAbsent = 0, total = 0;
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(year, month, day);
+    if (d < START || d > END) continue;
+    if (isWeekend(d)) continue;
+    total++;
+    const ds = dateStr(d);
+    const dayData = getDay(ds);
+    if (dayData.gym === 'done') gymDone++;
+    else if (dayData.gym === 'absent') gymAbsent++;
+    if (dayData.steps === 'done') stepsDone++;
+    else if (dayData.steps === 'absent') stepsAbsent++;
+  }
+  return { gymDone, gymAbsent, stepsDone, stepsAbsent, total, gymRemaining: total - gymDone - gymAbsent };
+}
+
+function updateAllStatBars() {
+  getMonthList().forEach(([y, m]) => {
+    const el = document.getElementById(`stat-bar-${y}-${m}`);
+    if (!el) return;
+    const s = getMonthStats(y, m);
+    el.innerHTML = `
+      <div class="stat-chip hit"><span class="chip-num">${s.gymDone}</span>Hit</div>
+      <div class="stat-chip absent"><span class="chip-num">${s.gymAbsent}</span>Absent</div>
+      <div class="stat-chip remaining"><span class="chip-num">${s.gymRemaining}</span>Left</div>
+      <div class="stat-chip total"><span class="chip-num">${s.total}</span>Total</div>
+    `;
+  });
+}
+
+function updateMiniStats() {
+  getMonthList().forEach(([y, m]) => {
+    const el = document.getElementById(`mini-stats-${y}-${m}`);
+    if (!el) return;
+    const s = getMonthStats(y, m);
+    el.innerHTML = `
+      <span class="mini-pill done">${s.gymDone}✓</span>
+      ${s.gymAbsent > 0 ? `<span class="mini-pill absent">${s.gymAbsent}✕</span>` : ''}
+    `;
+  });
+}
+
+// ===================== PINNED LEDGER =====================
+function updatePinnedCard() {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  document.getElementById('pinned-month-name').textContent = `${MONTHS[m]} ${y}`;
+
+  const todayDate = now.getDate();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+  let passed = 0, gymHit = 0, stepsHit = 0, monthTotal = 0;
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(y, m, day);
+    if (d < START || d > END) continue;
+    if (isWeekend(d)) continue;
+    monthTotal++;
+    if (day > todayDate) continue; // future day — counts toward month total, not "so far"
+    passed++;
+    const ds = dateStr(d);
+    const dayData = getDay(ds);
+    if (dayData.gym === 'done') gymHit++;
+    if (dayData.steps === 'done') stepsHit++;
+  }
+
+  document.getElementById('pin-days-passed').textContent = passed;
+  document.getElementById('pin-days-total').textContent = monthTotal;
+  document.getElementById('pin-gym-hit').textContent = gymHit;
+  document.getElementById('pin-gym-total').textContent = passed;
+  document.getElementById('pin-steps-hit').textContent = stepsHit;
+  document.getElementById('pin-steps-total').textContent = passed;
+
+  const gymPct = passed > 0 ? (gymHit / passed * 100) : 0;
+  const stepsPct = passed > 0 ? (stepsHit / passed * 100) : 0;
+  document.getElementById('pin-gym-bar').style.width = gymPct + '%';
+  document.getElementById('pin-steps-bar').style.width = stepsPct + '%';
+}
+
+// ===================== STREAK =====================
 function updateStreak() {
   let streak = 0;
-  let check = new Date(TODAY);
-  while (check >= START) {
-    if (isSun(check)) { check.setDate(check.getDate()-1); continue; }
-    if (data[dk(check)]==='done') { streak++; check.setDate(check.getDate()-1); }
-    else break;
+  let check = startOfToday();
+  while (true) {
+    if (check < START) break;
+    if (isWeekend(check)) { check.setDate(check.getDate() - 1); continue; }
+    const ds = dateStr(check);
+    const day = getDay(ds);
+    if (day.gym === 'done') {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else {
+      break;
+    }
   }
-  document.getElementById('streak-text').textContent = streak + ' day streak';
+  document.getElementById('streak-count').textContent = streak;
 }
 
-buildMonths();
+// ===================== AUTO REFRESH LOCKS =====================
+function autoRefreshLocks() {
+  let d = new Date(START);
+  while (d <= END) {
+    if (!isWeekend(d)) {
+      const ds = dateStr(d);
+      ['gym', 'steps'].forEach(type => {
+        const day = getDay(ds);
+        const ts = day[type + 'Ts'];
+        if (ts) {
+          const remaining = locksInMs(ts);
+          if (isLocked(ts) || remaining < 65000) refreshPill(ds, type, false);
+        }
+      });
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  updateAllStatBars();
+  updateMiniStats();
+  updatePinnedCard();
+  updateStreak();
+}
+
+// ===================== CHARTS =====================
+let charts = {};
+Chart.defaults.color = '#5C5448';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+
+function getWeeklyData() {
+  const weeks = {};
+  let d = new Date(START);
+  while (d <= END) {
+    if (!isWeekend(d)) {
+      const wd = d.getDay();
+      const monday = new Date(d);
+      monday.setDate(d.getDate() - (wd === 0 ? 6 : wd - 1));
+      const wk = dateStr(monday);
+      if (!weeks[wk]) weeks[wk] = { done: 0, absent: 0 };
+      const ds = dateStr(d);
+      const day = getDay(ds);
+      if (day.gym === 'done') weeks[wk].done++;
+      else if (day.gym === 'absent') weeks[wk].absent++;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  const sorted = Object.keys(weeks).sort();
+  return {
+    labels: sorted.map(w => { const dt = new Date(w); return `${dt.getMonth()+1}/${dt.getDate()}`; }),
+    done: sorted.map(w => weeks[w].done),
+    absent: sorted.map(w => weeks[w].absent),
+  };
+}
+
+function rebuildCharts() {
+  Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+  charts = {};
+
+  const monthList = getMonthList();
+  const monthLabels = monthList.map(([y, m]) => MONTHS[m].slice(0,3));
+  const monthDone = [], monthAbsent = [], monthRemaining = [];
+  monthList.forEach(([y, m]) => {
+    const s = getMonthStats(y, m);
+    monthDone.push(s.gymDone);
+    monthAbsent.push(s.gymAbsent);
+    monthRemaining.push(s.gymRemaining);
+  });
+
+  charts.monthly = new Chart(document.getElementById('chart-monthly'), {
+    type: 'bar',
+    data: {
+      labels: monthLabels,
+      datasets: [
+        { label: 'Done', data: monthDone, backgroundColor: '#C1432B', borderRadius: 2, stack: 's' },
+        { label: 'Absent', data: monthAbsent, backgroundColor: '#9A938A', borderRadius: 2, stack: 's' },
+        { label: 'Remaining', data: monthRemaining, backgroundColor: 'rgba(47,110,98,0.25)', borderRadius: 2, stack: 's' },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, color: '#5C5448' } },
+        tooltip: { mode: 'index' }
+      },
+      scales: {
+        x: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C' } },
+        y: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C', stepSize: 5 }, stacked: true, beginAtZero: true }
+      }
+    }
+  });
+
+  const wkData = getWeeklyData();
+  charts.weekly = new Chart(document.getElementById('chart-weekly'), {
+    type: 'bar',
+    data: {
+      labels: wkData.labels,
+      datasets: [{ label: 'Done', data: wkData.done, backgroundColor: '#2F6E62', borderRadius: 2 }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index' } },
+      scales: {
+        x: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C', maxTicksLimit: 12 } },
+        y: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C', stepSize: 1 }, beginAtZero: true, max: 6 }
+      }
+    }
+  });
+
+  const allValidDays = [];
+  let d2 = new Date(START);
+  while (d2 <= END) {
+    if (!isWeekend(d2)) allValidDays.push(new Date(d2));
+    d2.setDate(d2.getDate() + 1);
+  }
+  const totalDays = allValidDays.length;
+  const target = totalDays; // one gym session per valid day is the rolling target
+  const today = new Date(); today.setHours(23,59,59,999);
+
+  const cumLabels = [], cumActual = [], cumTarget = [];
+  let running = 0;
+  allValidDays.forEach((d, i) => {
+    const ds = dateStr(d);
+    const day = getDay(ds);
+    if (day.gym === 'done') running++;
+    const targetVal = parseFloat(((i+1) / totalDays * target).toFixed(1));
+    const label = `${d.getMonth()+1}/${d.getDate()}`;
+    cumLabels.push(label);
+    if (d <= today) { cumActual.push(running); } else { cumActual.push(null); }
+    cumTarget.push(targetVal);
+  });
+
+  const step = Math.max(1, Math.floor(cumLabels.length / 20));
+  const dsLabels = cumLabels.map((l, i) => i % step === 0 ? l : '');
+
+  charts.cumulative = new Chart(document.getElementById('chart-cumulative'), {
+    type: 'line',
+    data: {
+      labels: dsLabels,
+      datasets: [
+        {
+          label: 'Actual', data: cumActual, borderColor: '#2F6E62', backgroundColor: 'rgba(47,110,98,0.10)',
+          tension: 0.25, fill: true, pointRadius: 0, borderWidth: 2, spanGaps: false,
+        },
+        {
+          label: `Target (${target})`, data: cumTarget, borderColor: '#C1432B', borderDash: [5,4],
+          tension: 0.1, fill: false, pointRadius: 0, borderWidth: 1.5,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, color: '#5C5448' } },
+        tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y !== null ? ctx.parsed.y : '—'}` } }
+      },
+      scales: {
+        x: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C', maxTicksLimit: 10 } },
+        y: { grid: { color: '#D8CCB4' }, ticks: { color: '#948B7C' }, beginAtZero: true, max: target + 5 }
+      }
+    }
+  });
+}
+
+// ===================== INIT =====================
+loadData();
+renderAllMonths();
+updatePinnedCard();
 updateStreak();
+
+setInterval(() => { autoRefreshLocks(); }, 60000);
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    autoRefreshLocks();
+    if (analyticsOpen) rebuildCharts();
+  }
+});
 </script>
 </body>
 </html>
