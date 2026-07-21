@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Training Calendar — Jul–Sep 2026</title>
+<title>Training Calendar — Jul&ndash;Sep 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -36,18 +36,507 @@
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background: linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 42px,
-                linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/42px 100%,
-                var(--bg);
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 42px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/42px 100%,
+      var(--bg);
     color:var(--text);
     font-family:'Inter', sans-serif;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
     padding-bottom:60px;
   }
-  /* All your original styles (unchanged) */
-  .legend{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-top:26px;font-family:'JetBrains Mono', monospace;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);}
-  /* ... (rest of your styles - I kept them all) ... */
+
+  a{color:inherit;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    max-width:1100px;
+    margin:0 auto;
+    padding:56px 24px 28px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--legs);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size:clamp(36px, 6vw, 64px);
+    letter-spacing:.01em;
+    text-transform:uppercase;
+    margin:0 0 10px;
+    line-height:1.02;
+  }
+  h1 span{color:var(--chest);}
+  .sub{
+    color:var(--text-muted);
+    font-size:15px;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.55;
+  }
+
+  /* legend */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    justify-content:center;
+    margin-top:26px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+  }
+  .legend .dot{
+    display:inline-block;
+    width:9px;height:9px;
+    border-radius:2px;
+    margin-right:7px;
+    vertical-align:middle;
+  }
+  .legend li{list-style:none;display:flex;align-items:center;}
+  .legend ul{display:flex;gap:18px;flex-wrap:wrap;padding:0;margin:0;justify-content:center;}
+
+  /* ---------- Month tabs ---------- */
+  .tabs{
+    max-width:1100px;
+    margin:38px auto 0;
+    padding:0 24px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+  }
+  .tab{
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-size:14px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--text-muted);
+    padding:10px 22px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .18s ease;
+  }
+  .tab:hover{color:var(--text); border-color:var(--text-dim);}
+  .tab.active{
+    background:var(--text);
+    color:var(--bg);
+    border-color:var(--text);
+  }
+  .tab .count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    opacity:.6;
+    margin-left:6px;
+  }
+
+  /* ---------- Calendar ---------- */
+  main{max-width:1100px; margin:0 auto; padding:34px 24px 0;}
+  .month{display:none;}
+  .month.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .month-title{
+    font-family:'Oswald', sans-serif;
+    font-size:22px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin:0 0 16px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .month-title .week-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+    text-transform:none;
+    letter-spacing:0;
+  }
+
+  .weekdays{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .weekdays div{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    padding-bottom:4px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:8px;
+  }
+
+  .cell{
+    position:relative;
+    min-height:96px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:9px 9px 10px;
+    cursor:pointer;
+    text-align:left;
+    color:var(--text);
+    font-family:inherit;
+    transition:transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+  }
+  .cell.empty{
+    background:transparent;
+    border-color:transparent;
+    cursor:default;
+  }
+  .cell:not(.empty):hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow);
+    background:var(--surface-hover);
+  }
+  .cell:not(.empty):focus-visible{
+    outline:2px solid var(--legs);
+    outline-offset:2px;
+  }
+  .cell .bar{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:4px;
+  }
+  .cell.tag-back-biceps .bar{background:var(--back);}
+  .cell.tag-shoulders-legs .bar{background:var(--legs);}
+  .cell.tag-chest-triceps .bar{background:var(--chest);}
+  .cell.tag-rest .bar{background:var(--rest);}
+
+  .cell .num{
+    font-family:'Oswald', sans-serif;
+    font-size:20px;
+    font-weight:600;
+  }
+  .cell.tag-rest .num{color:var(--text-dim);}
+
+  .cell .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:.02em;
+    line-height:1.35;
+    text-transform:uppercase;
+    margin-top:8px;
+  }
+  .cell.tag-back-biceps .label{color:var(--back);}
+  .cell.tag-shoulders-legs .label{color:var(--legs);}
+  .cell.tag-chest-triceps .label{color:var(--chest);}
+  .cell.tag-rest .label{color:var(--text-dim); font-style:italic;}
+
+  .cell.is-today{
+    border-color:#ffd166;
+    border-width:2px;
+    box-shadow:0 0 0 1px #ffd166, 0 0 18px rgba(255,209,102,.35);
+  }
+  .cell.is-today .num{color:#ffd166;}
+
+  .today-badge{
+    position:absolute;
+    top:6px; right:6px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    background:#ffd166;
+    color:#1a1503;
+    font-family:'JetBrains Mono', monospace;
+    font-size:8.5px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:2.5px 6px 2.5px 5px;
+    border-radius:999px;
+    box-shadow:0 0 0 4px rgba(255,209,102,.22);
+    animation:today-pulse 1.8s ease-in-out infinite;
+  }
+  .today-badge .ping{
+    width:5px; height:5px;
+    border-radius:50%;
+    background:#1a1503;
+    flex-shrink:0;
+  }
+  @keyframes today-pulse{
+    0%, 100% { box-shadow:0 0 0 4px rgba(255,209,102,.22); }
+    50% { box-shadow:0 0 0 8px rgba(255,209,102,.08); }
+  }
+
+  /* ---------- Panel / Modal ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(8,9,11,.68);
+    backdrop-filter:blur(2px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+    padding:20px;
+  }
+  .overlay.open{display:flex;}
+
+  .card{
+    width:100%;
+    max-width:560px;
+    max-height:88vh;
+    overflow-y:auto;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+    transform:translateY(14px) scale(.98);
+    opacity:0;
+    transition:transform .22s ease, opacity .22s ease;
+  }
+  .overlay.open .card{transform:translateY(0) scale(1); opacity:1;}
+
+  .card-head{
+    padding:22px 24px 18px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .card-head .bib{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:8px;
+  }
+  .card-head h2{
+    font-family:'Oswald', sans-serif;
+    font-size:26px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin:0 0 6px;
+    letter-spacing:.01em;
+  }
+  .card-head .focus{
+    font-size:13.5px;
+    color:var(--text-muted);
+  }
+  .close-btn{
+    position:absolute;
+    top:16px; right:16px;
+    width:32px; height:32px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    color:var(--text-muted);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, color .15s ease;
+  }
+  .close-btn:hover{background:var(--surface-hover); color:var(--text);}
+
+  .rest-body{
+    padding:34px 24px 30px;
+    text-align:center;
+  }
+  .rest-body .big{
+    font-family:'Oswald', sans-serif;
+    font-size:20px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--rest);
+    margin-bottom:8px;
+  }
+  .rest-body p{color:var(--text-muted); font-size:14px; line-height:1.6; max-width:360px; margin:0 auto;}
+
+  table.plan{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.plan thead th{
+    text-align:left;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    padding:14px 24px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  table.plan td{
+    padding:10px 24px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  table.plan tbody tr:last-child td{border-bottom:none;}
+  table.plan td.cat{color:var(--text-muted); font-size:12px; width:38%;}
+  table.plan td.ex{font-weight:500;}
+  .ex-link{
+    color:var(--text);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px dashed var(--text-dim);
+    padding-bottom:1px;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .ex-link:hover, .ex-link:focus-visible{
+    color:#ffd166;
+    border-bottom-color:#ffd166;
+  }
+  .play-ico{
+    flex-shrink:0;
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--legs-dim);
+    color:var(--legs);
+    font-size:8px;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, color .15s ease;
+  }
+  .ex-link:hover .play-ico, .ex-link:focus-visible .play-ico{
+    background:#ffd166;
+    color:#1a1503;
+  }
+  table.plan td.num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color:var(--text-muted);
+    white-space:nowrap;
+  }
+  tr.warmup td{background:rgba(255,209,102,.06);}
+  tr.warmup td.cat{color:#ffd166;}
+
+  .card-foot{
+    padding:14px 24px 22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-dim);
+    letter-spacing:.03em;
+  }
+
+  /* ---------- Video lightbox ---------- */
+  .video-overlay{
+    position:fixed; inset:0;
+    background:rgba(4,5,6,.82);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:70;
+    padding:20px;
+  }
+  .video-overlay.open{display:flex;}
+  .video-box{
+    width:100%;
+    max-width:720px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 30px 90px rgba(0,0,0,.65);
+    transform:scale(.97);
+    opacity:0;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .video-overlay.open .video-box{transform:scale(1); opacity:1;}
+  .video-frame-wrap{
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    background:#000;
+  }
+  .video-frame-wrap iframe{
+    position:absolute; top:0; left:0; width:100%; height:100%; border:0;
+  }
+  .video-info{
+    padding:14px 18px 16px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .video-info .meta{min-width:0;}
+  .video-info .v-title{
+    font-family:'Oswald', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin:0 0 3px;
+  }
+  .video-info .v-sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-dim);
+  }
+  .video-close{
+    flex-shrink:0;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--surface-alt);
+    color:var(--text-muted);
+    font-size:15px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, color .15s ease;
+  }
+  .video-close:hover{background:var(--surface-hover); color:var(--text);}
+
+  .ex-link.no-video .play-ico{background:var(--rest-dim); color:var(--text-dim);}
+  .ex-link.no-video:hover .play-ico{background:var(--text-dim); color:var(--surface);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:1100px;
+    margin:50px auto 0;
+    padding:20px 24px 0;
+    border-top:1px solid var(--line);
+  }
+  footer .cautions{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.03em;
+    color:var(--text-dim);
+    line-height:1.9;
+    text-align:center;
+    padding-top:18px;
+  }
+
+  @media (max-width:640px){
+    .grid, .weekdays{gap:5px;}
+    .cell{min-height:72px; padding:7px;}
+    .cell .num{font-size:16px;}
+    .cell .label{font-size:8px;}
+    table.plan td, table.plan thead th{padding:9px 14px;}
+    .card-head{padding:18px 18px 14px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
 </style>
 </head>
 <body>
@@ -55,7 +544,7 @@
 <header class="hero">
   <div class="eyebrow">Jul 20 &ndash; Sep 30, 2026 &nbsp;/&nbsp; 6-Day Split</div>
   <h1>Training <span>Calendar</span></h1>
-  <p class="sub">Tap any date to pull up that day's full workout &mdash; warm-up, exercises, sets &amp; reps. Variations rotate weekly.</p>
+  <p class="sub">Tap any date to pull up that day's full workout &mdash; warm-up, exercises, sets &amp; reps. Variations rotate weekly so the split stays the same but the exercises don't.</p>
 
   <div class="legend">
     <ul>
@@ -68,6 +557,7 @@
 </header>
 
 <div class="tabs" id="tabs"></div>
+
 <main id="months"></main>
 
 <footer>
@@ -85,153 +575,17 @@
 </div>
 
 <script>
-const DATA = {
-"2026-07-20":{"date":"2026-07-20","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":1,"rows":[
-  ["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],
-  ["Back – Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Back – Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Back – Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}]
-]},
-"2026-07-21":{"date":"2026-07-21","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":1,"rows":[
-  ["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Traps","Barbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug – Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],
-  ["Warm-up","Leg Extensions","1-2","12-15",null],
-  ["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Calves (Finish)","Standing Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises – Proper Form","channel":"Canadian Protein"}]
-]},
-"2026-07-22":{"date":"2026-07-22","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":1,"rows":[
-  ["Warm-up","Pec Flys","1-2","12-15",null],
-  ["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}]
-]},
-"2026-07-23":{"date":"2026-07-23","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":1,"rows":[
-  ["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","Barbell Bent-Over Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}]
-]},
-"2026-07-24":{"date":"2026-07-24","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":1,"rows":[
-  ["Warm-up","Seated Leg Curl","1-2","12-15",null],
-  ["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],
-  ["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],
-  ["Glutes/Adductors/Abductors","Hip Thrust","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],
-  ["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],
-  ["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],
-  ["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],
-  ["Shoulders (Front Delt)","Seated Barbell Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press – How To","channel":"Muscle & Strength"}],
-  ["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises – Proper Form","channel":"Canadian Protein"}],
-  ["Forearms – Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Forearms – Flexors","Barbell Wrist Curl","3","8-12",null],
-  ["Forearms – Extensors","Reverse Barbell Wrist Curl","3","8-12",null]
-]},
-"2026-07-25":{"date":"2026-07-25","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":1,"rows":[
-  ["Warm-up","Pec Flys","1-2","12-15",null],
-  ["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Lower)","Decline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Medial Head)","Close-Grip Bench Press","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}]
-]},
-"2026-07-26":{"date":"2026-07-26","weekday":"Sunday","title":"Rest Day","tag":"rest","week":1,"rows":[]},
-"2026-07-27":{"date":"2026-07-27","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":2,"rows":[
-  ["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],
-  ["Back – Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Back – Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Back – Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown – 3 Golden Rules","channel":"Jeremy Ethier"}],
-  ["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}]
-]},
-"2026-07-28":{"date":"2026-07-28","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":2,"rows":[
-  ["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise – Proper Form Tutorial","channel":"Fitness Form Guide"}],
-  ["Traps","Dumbbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug – Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],
-  ["Warm-up","Leg Extensions","1-2","12-15",null],
-  ["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat – Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],
-  ["Calves (Finish)","Standing Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises – Proper Form","channel":"Canadian Protein"}]
-]},
-"2026-07-29":{"date":"2026-07-29","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":2,"rows":[
-  ["Warm-up","Pec Flys","1-2","12-15",null],
-  ["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}]
-]},
-"2026-07-30":{"date":"2026-07-30","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":2,"rows":[
-  ["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Back – Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row – Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],
-  ["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}]
-]},
-"2026-07-31":{"date":"2026-07-31","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":2,"rows":[
-  ["Warm-up","Seated Leg Curl","1-2","12-15",null],
-  ["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],
-  ["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],
-  ["Glutes/Adductors/Abductors","Cable Glute Kickback","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],
-  ["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],
-  ["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],
-  ["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],
-  ["Shoulders (Front Delt)","Dumbbell Shoulder Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press – How To","channel":"Muscle & Strength"}],
-  ["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises – Proper Form","channel":"Canadian Protein"}],
-  ["Forearms – Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl – Perfect Technique","channel":"Renaissance Periodization"}],
-  ["Forearms – Flexors","Dumbbell Wrist Curl","3","8-12",null],
-  ["Forearms – Extensors","Behind-the-Back Wrist Curl","3","8-12",null]
-]},
-"2026-08-01":{"date":"2026-08-01","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":2,"rows":[
-  ["Warm-up","Pec Flys","1-2","12-15",null],
-  ["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Chest (Lower)","Decline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press – Tutorial & Proper Form","channel":"Buff Dudes"}],
-  ["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}],
-  ["Triceps (Medial Head)","Diamond Push-Up","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns – Tutorial + Tips","channel":"Team Evolve"}]
-]},
-"2026-08-02":{"date":"2026-08-02","weekday":"Sunday","title":"Rest Day","tag":"rest","week":2,"rows":[]}
- // ... I have reordered all remaining dates following the same logic (Heavy Compound first, then secondary, then isolation) ...
- // For the full 73+ entries, the pattern is applied consistently.
-};
+const DATA = {"2026-07-20":{"date":"2026-07-20","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":1,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-07-21":{"date":"2026-07-21","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":1,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Barbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-07-22":{"date":"2026-07-22","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":1,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-07-23":{"date":"2026-07-23","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":1,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Barbell Bent-Over Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-07-24":{"date":"2026-07-24","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":1,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Thrust","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Seated Barbell Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Barbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Reverse Barbell Wrist Curl","3","8-12",null]]},"2026-07-25":{"date":"2026-07-25","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":1,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Close-Grip Bench Press","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-07-26":{"date":"2026-07-26","weekday":"Sunday","title":"Rest Day","tag":"rest","week":1,"rows":[]},"2026-07-27":{"date":"2026-07-27","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":2,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-07-28":{"date":"2026-07-28","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":2,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Dumbbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-07-29":{"date":"2026-07-29","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":2,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-07-30":{"date":"2026-07-30","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":2,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-07-31":{"date":"2026-07-31","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":2,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Cable Glute Kickback","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Dumbbell Shoulder Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Dumbbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Behind-the-Back Wrist Curl","3","8-12",null]]},"2026-08-01":{"date":"2026-08-01","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":2,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Diamond Push-Up","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-02":{"date":"2026-08-02","weekday":"Sunday","title":"Rest Day","tag":"rest","week":2,"rows":[]},"2026-08-03":{"date":"2026-08-03","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":3,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Wide-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-04":{"date":"2026-08-04","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":3,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Trap-Bar Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Smith Machine Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-08-05":{"date":"2026-08-05","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":3,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-06":{"date":"2026-08-06","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":3,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Chest-Supported Machine Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Close-Grip EZ-Bar Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-07":{"date":"2026-08-07","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":3,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Legs (Hamstrings)","Good Morning","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Adduction Machine","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Arnold Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Cable Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Barbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Reverse Barbell Wrist Curl","3","8-12",null]]},"2026-08-08":{"date":"2026-08-08","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":3,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Mid Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","High-to-Low Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Straight-Bar Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Dumbbell Kickback","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-09":{"date":"2026-08-09","weekday":"Sunday","title":"Rest Day","tag":"rest","week":3,"rows":[]},"2026-08-10":{"date":"2026-08-10","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":4,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","V-Bar Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Wide-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-11":{"date":"2026-08-11","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":4,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Smith Machine Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Cable Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-08-12":{"date":"2026-08-12","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":4,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-13":{"date":"2026-08-13","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":4,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Meadows Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Chest-Supported Machine Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Close-Grip EZ-Bar Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-14":{"date":"2026-08-14","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":4,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Good Morning","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Abduction Machine","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Smith Machine Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Cable Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Dumbbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Behind-the-Back Wrist Curl","3","8-12",null]]},"2026-08-15":{"date":"2026-08-15","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":4,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Chest Dips","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Mid Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Close-Grip Bench Press","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Dumbbell Kickback","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-16":{"date":"2026-08-16","weekday":"Sunday","title":"Rest Day","tag":"rest","week":4,"rows":[]},"2026-08-17":{"date":"2026-08-17","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":5,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","V-Bar Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-18":{"date":"2026-08-18","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":5,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Smith Machine Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Barbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-08-19":{"date":"2026-08-19","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":5,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-20":{"date":"2026-08-20","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":5,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Barbell Bent-Over Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Meadows Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Chest-Supported Machine Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-21":{"date":"2026-08-21","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":5,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Thrust","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Seated Barbell Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Barbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Reverse Barbell Wrist Curl","3","8-12",null]]},"2026-08-22":{"date":"2026-08-22","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":5,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Diamond Push-Up","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-23":{"date":"2026-08-23","weekday":"Sunday","title":"Rest Day","tag":"rest","week":5,"rows":[]},"2026-08-24":{"date":"2026-08-24","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":6,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","V-Bar Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-25":{"date":"2026-08-25","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":6,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Smith Machine Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Dumbbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Smith Machine Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-08-26":{"date":"2026-08-26","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":6,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-27":{"date":"2026-08-27","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":6,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Barbell Bent-Over Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Meadows Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-08-28":{"date":"2026-08-28","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":6,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Cable Glute Kickback","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Dumbbell Shoulder Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Dumbbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Behind-the-Back Wrist Curl","3","8-12",null]]},"2026-08-29":{"date":"2026-08-29","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":6,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Straight-Bar Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-08-30":{"date":"2026-08-30","weekday":"Sunday","title":"Rest Day","tag":"rest","week":6,"rows":[]},"2026-08-31":{"date":"2026-08-31","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":7,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Wide-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-01":{"date":"2026-09-01","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":7,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Trap-Bar Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-09-02":{"date":"2026-09-02","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":7,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-03":{"date":"2026-09-03","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":7,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Barbell Bent-Over Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Close-Grip EZ-Bar Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-04":{"date":"2026-09-04","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":7,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Legs (Hamstrings)","Good Morning","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Adduction Machine","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Arnold Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Cable Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Barbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Reverse Barbell Wrist Curl","3","8-12",null]]},"2026-09-05":{"date":"2026-09-05","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":7,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Mid Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","High-to-Low Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Close-Grip Bench Press","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Dumbbell Kickback","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-06":{"date":"2026-09-06","weekday":"Sunday","title":"Rest Day","tag":"rest","week":7,"rows":[]},"2026-09-07":{"date":"2026-09-07","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":8,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Close-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Wide-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-08":{"date":"2026-09-08","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":8,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Leg Press","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Cable Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-09-09":{"date":"2026-09-09","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":8,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-10":{"date":"2026-09-10","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":8,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Seated Cable Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Close-Grip EZ-Bar Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-11":{"date":"2026-09-11","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":8,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Good Morning","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Abduction Machine","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Smith Machine Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Cable Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Dumbbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Behind-the-Back Wrist Curl","3","8-12",null]]},"2026-09-12":{"date":"2026-09-12","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":8,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Chest Dips","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Mid Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Diamond Push-Up","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Dumbbell Kickback","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-13":{"date":"2026-09-13","weekday":"Sunday","title":"Rest Day","tag":"rest","week":8,"rows":[]},"2026-09-14":{"date":"2026-09-14","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":9,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Neutral-Grip Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Incline Dumbbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-15":{"date":"2026-09-15","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":9,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Hack Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Barbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Lean-Away Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Smith Machine Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-09-16":{"date":"2026-09-16","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":9,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Low-to-High Cable Fly","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Single-Arm Overhead Cable Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-17":{"date":"2026-09-17","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":9,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","T-Bar Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Chest-Supported Machine Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Preacher Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-18":{"date":"2026-09-18","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":9,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Hip Thrust","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Legs (Hamstrings)","Lying Leg Curl","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Seated Barbell Overhead Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Reverse Pec-Deck Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Reverse-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Barbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Reverse Barbell Wrist Curl","3","8-12",null]]},"2026-09-19":{"date":"2026-09-19","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":9,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Straight-Bar Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Rope Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-20":{"date":"2026-09-20","weekday":"Sunday","title":"Rest Day","tag":"rest","week":9,"rows":[]},"2026-09-21":{"date":"2026-09-21","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":10,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Single-Arm Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","V-Bar Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Standing Cable Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Cross-Body Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-22":{"date":"2026-09-22","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":10,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Smith Machine Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Bulgarian Split Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Dumbbell Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Leaning Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Calf Raise (Machine)","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-09-23":{"date":"2026-09-23","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":10,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Smith Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Cross-Body Overhead Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-24":{"date":"2026-09-24","weekday":"Thursday","title":"Back (Rows) + Biceps (Short Head) + Brachialis","tag":"back-biceps","week":10,"rows":[["Warm-up","Seated Chest-Supported Rowing","1-2","12-15",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Meadows Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Chest-Supported Machine Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Back \u2013 Row","Single-Arm Dumbbell Row","3","8-12",{"id":"qXrTDQG1oUQ","title":"Bent-Over Barbell Row \u2013 Proper Form for a Bigger Back","channel":"Fitness Form Guide"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Spider Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Short Head)","Concentration Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Reverse-Grip Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-25":{"date":"2026-09-25","weekday":"Friday","title":"Legs (Hamstrings) + Shoulders (Rear/Front) + Forearms","tag":"shoulders-legs","week":10,"rows":[["Warm-up","Seated Leg Curl","1-2","12-15",null],["Legs (Hamstrings)","Romanian Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Legs (Hamstrings)","Stiff-Leg Deadlift","3","8-12",{"id":"2SHsk9AzdjA","title":"How to Perform Romanian Deadlift","channel":"Buff Dudes"}],["Glutes/Adductors/Abductors","Cable Glute Kickback","3","8-12",{"id":"S_uZP4UH6J0","title":"How To Do A Barbell Hip Thrust The Right Way","channel":"Mind Pump TV"}],["Warm-up","Single-Arm Cable Fly","1-2","12-15",null],["Shoulders (Front Delt)","Dumbbell Shoulder Press","3","8-12",{"id":"ZXpdJOLNoWw","title":"Barbell Overhead Press \u2013 How To","channel":"Muscle & Strength"}],["Shoulders (Rear Delt)","Bent-Over Dumbbell Rear-Delt Fly","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Shoulders (Rear Delt)","Face Pull","3","8-12",{"id":"wnPX6Fwe-Fg","title":"Face Pull Technique 101 (Delt & Back Hypertrophy)","channel":"Jacob Schroeder"}],["Calves (Finish)","Seated Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}],["Forearms \u2013 Brachioradialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Forearms \u2013 Flexors","Dumbbell Wrist Curl","3","8-12",null],["Forearms \u2013 Extensors","Behind-the-Back Wrist Curl","3","8-12",null]]},"2026-09-26":{"date":"2026-09-26","weekday":"Saturday","title":"Chest (Middle & Lower) + Triceps (Lateral & Medial)","tag":"chest-triceps","week":10,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Middle)","Flat Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Lower)","Decline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Middle)","Flat Machine Chest Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Medial Head)","Close-Grip Bench Press","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Single-Arm Cable Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Lateral Head)","Reverse-Grip Pushdown","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]},"2026-09-27":{"date":"2026-09-27","weekday":"Sunday","title":"Rest Day","tag":"rest","week":10,"rows":[]},"2026-09-28":{"date":"2026-09-28","weekday":"Monday","title":"Back (Lats) + Biceps (Long Head) + Brachialis","tag":"back-biceps","week":11,"rows":[["Warm-up","Straight-Arm Rope Pulldown","1-2","12-15",null],["Back \u2013 Lat Pulldown","Wide-Grip Lat Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","Reverse-Grip (Underhand) Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Back \u2013 Lat Pulldown","V-Bar Pulldown","3","8-12",{"id":"CAwf7n6Luuc","title":"How To: Lat Pulldown \u2013 3 Golden Rules","channel":"Jeremy Ethier"}],["Warm-up","EZ-Bar Curl","1-2","12-15",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Wide-Grip Barbell Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Biceps (Long Head)","Drag Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}],["Brachialis","Rope Hammer Curl","3","8-12",{"id":"4BRAf2BajWw","title":"Dumbbell Hammer Curl \u2013 Perfect Technique","channel":"Renaissance Periodization"}]]},"2026-09-29":{"date":"2026-09-29","weekday":"Tuesday","title":"Shoulders (Lateral) + Traps + Legs (Quads) + Calves","tag":"shoulders-legs","week":11,"rows":[["Warm-up","Leg Extensions","1-2","12-15",null],["Legs (Quads)","Barbell Back Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Smith Machine Squat","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Legs (Quads)","Walking Lunge","3","8-12",{"id":"8PMjqgR8Wa8","title":"How to Barbell Back Squat \u2013 Tutorial for Beginners","channel":"J2FIT Strength & Conditioning"}],["Traps","Trap-Bar Shrug","3","8-12",{"id":"9xGqgGFAtiM","title":"Barbell Shrug \u2013 Shoulder/Trap Exercise","channel":"Bodybuilding.com"}],["Warm-up","Single-Arm Cable Lateral Raise","1-2","12-15",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Dumbbell Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Cable Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Shoulders (Lateral Head)","Machine Lateral Raise","3","8-12",{"id":"nnH63icHYXY","title":"Dumbbell Lateral Raise \u2013 Proper Form Tutorial","channel":"Fitness Form Guide"}],["Calves (Finish)","Standing Barbell Calf Raise","3","8-12",{"id":"97NbelB5yvQ","title":"How to do Standing Calf Raises \u2013 Proper Form","channel":"Canadian Protein"}]]},"2026-09-30":{"date":"2026-09-30","weekday":"Wednesday","title":"Chest (Upper) + Triceps (Long Head)","tag":"chest-triceps","week":11,"rows":[["Warm-up","Pec Flys","1-2","12-15",null],["Chest (Upper)","Incline Barbell Bench Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Dumbbell Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Chest (Upper)","Incline Machine Press","3","8-12",{"id":"gRVjAtPip0Y","title":"How to Perform Bench Press \u2013 Tutorial & Proper Form","channel":"Buff Dudes"}],["Warm-up","Rope Push Down","1-2","12-15",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","EZ-Bar Skull Crusher","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Dumbbell Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}],["Triceps (Long Head)","Overhead Rope Extension","3","8-12",{"id":"d-ySLTHUgQA","title":"Rope Tricep Pushdowns \u2013 Tutorial + Tips","channel":"Team Evolve"}]]}}
+;
 
 const MONTHS = [
-  {key:'2026-07', label:'July', short:'Jul', year:2026, month:6},
-  {key:'2026-08', label:'August', short:'Aug', year:2026, month:7},
-  {key:'2026-09', label:'September', short:'Sep', year:2026, month:8}
+  {key:'2026-07', label:'July',      short:'Jul', year:2026, month:6},
+  {key:'2026-08', label:'August',    short:'Aug', year:2026, month:7},
+  {key:'2026-09', label:'September', short:'Sep', year:2026, month:8},
 ];
 
 const WEEKDAY_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const TODAY = new Date(2026,6,21);
+const TODAY = new Date(2026,6,21); // fixed "today" reference for the highlight ring
 
 function pad(n){ return n<10 ? '0'+n : ''+n; }
 function isoOf(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; }
@@ -262,7 +616,7 @@ function buildMonth(m){
   const firstOfMonth = new Date(m.year, m.month, 1);
   const lastOfMonth = new Date(m.year, m.month+1, 0);
   const totalDays = lastOfMonth.getDate();
-  const startOffset = (firstOfMonth.getDay() + 6) % 7;
+  const startOffset = (firstOfMonth.getDay() + 6) % 7; // Monday=0
 
   const weekNumsInMonth = new Set();
   for(let d=1; d<=totalDays; d++){
@@ -308,8 +662,45 @@ function buildMonth(m){
     }
     grid.appendChild(cell);
   }
+
   return wrap;
 }
+
+function videoUrl(exerciseName){
+  const q = exerciseName + ' exercise proper form tutorial';
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+}
+
+let videoIdSeq = 0;
+
+function openVideo(v, exerciseName){
+  const overlay = document.getElementById('videoOverlay');
+  const box = document.getElementById('videoBox');
+  box.innerHTML = `
+    <div class="video-frame-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" title="${v.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="video-info">
+      <div class="meta">
+        <div class="v-title">${exerciseName}</div>
+        <div class="v-sub">${v.title} &middot; ${v.channel}</div>
+      </div>
+      <button class="video-close" id="videoCloseBtn" aria-label="Close video">&times;</button>
+    </div>
+  `;
+  overlay.classList.add('open');
+  document.getElementById('videoCloseBtn').addEventListener('click', closeVideo);
+}
+
+function closeVideo(){
+  const overlay = document.getElementById('videoOverlay');
+  overlay.classList.remove('open');
+  document.getElementById('videoBox').innerHTML = '';
+}
+
+document.getElementById('videoOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'videoOverlay') closeVideo();
+});
 
 function openCard(iso){
   const info = DATA[iso];
@@ -328,13 +719,21 @@ function openCard(iso){
       </div>
       <div class="rest-body">
         <div class="big">No training scheduled</div>
-        <p>Light stretching or a walk is fine. Prioritize sleep, hydration and food today.</p>
+        <p>Light stretching or a walk is fine. Prioritize sleep, hydration and food today &mdash; this is where the muscle actually grows back.</p>
       </div>
     `;
   } else {
-    const rowsHtml = info.rows.map(r => {
-      const [cat, ex, sets, reps] = r;
-      return `<tr class="${cat==='Warm-up' ? 'warmup' : ''}"><td class="cat">${cat}</td><td class="ex">${ex}</td><td class="num">${sets} &times; ${reps}</td></tr>`;
+    videoIdSeq++;
+    window.__rowData = window.__rowData || {};
+    const rowsHtml = info.rows.map((r, idx) => {
+      const [cat, ex, sets, reps, video] = r;
+      const exCell = ex;
+      return `
+      <tr class="${cat==='Warm-up' ? 'warmup' : ''}">
+        <td class="cat">${cat}</td>
+        <td class="ex">${exCell}</td>
+        <td class="num">${sets} &times; ${reps}</td>
+      </tr>`;
     }).join('');
 
     card.innerHTML = `
@@ -348,14 +747,33 @@ function openCard(iso){
         <thead><tr><th>Category</th><th>Exercise</th><th>Sets &times; Reps</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
-      <div class="card-foot">Rest 60&ndash;90s between sets &nbsp;&bull;&nbsp; Focus on form</div>
+      <div class="card-foot">Rest 60&ndash;90s between sets &nbsp;&bull;&nbsp; Ask your trainer if you're unsure about form on any exercise</div>
     `;
   }
+
   overlay.classList.add('open');
-  document.getElementById('closeBtn').onclick = () => overlay.classList.remove('open');
+  document.getElementById('closeBtn').addEventListener('click', closeCard);
+  document.body.style.overflow = 'hidden';
 }
 
-document.getElementById('overlay').addEventListener('click', e => { if(e.target.id === 'overlay') document.getElementById('overlay').classList.remove('open'); });
+function closeCard(){
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('overlay').addEventListener('click', (e) => {
+  if(e.target.id === 'overlay') closeCard();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    const vOverlay = document.getElementById('videoOverlay');
+    if(vOverlay.classList.contains('open')){
+      closeVideo();
+    } else {
+      closeCard();
+    }
+  }
+});
 
 buildTabs();
 const monthsEl = document.getElementById('months');
@@ -365,5 +783,6 @@ MONTHS.forEach((m, i) => {
   monthsEl.appendChild(el);
 });
 </script>
+
 </body>
 </html>
