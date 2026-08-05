@@ -110,6 +110,11 @@
     display:flex; align-items:center; gap:4px;
   }
   .ping{width:6px; height:6px; border-radius:50%; background:#1db954;}
+  .rotate-badge{
+    position:absolute; bottom:8px; right:8px; font-size:8.5px; font-family:'JetBrains Mono',monospace;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--text-dim); border:1px solid var(--line);
+    padding:1px 5px; border-radius:999px; background:var(--surface-alt);
+  }
 
   /* overlay / card */
   .overlay{
@@ -171,7 +176,7 @@
 <header class="hero">
   <div class="eyebrow">Aug 5 &ndash; Oct 31, 2026 &middot; 13 Weeks</div>
   <h1>Hypertrophy <span>Training Calendar</span></h1>
-  <p class="sub">Same weekly split repeated every week. Every exercise list runs compound movements first, isolation movements last &mdash; track your numbers and add weight or reps each week.</p>
+  <p class="sub">Same weekly split and compound lifts all 13 weeks so progressive overload never resets. From week 8, 1&ndash;2 isolation exercises per day rotate to a new angle on the same muscle to cut down on repetitive stress. Every exercise list runs compound movements first, isolation movements last &mdash; track your numbers and add weight or reps each week.</p>
   <div class="legend">
     <ul>
       <li><span class="dot" style="background:var(--mon)"></span>Mon &middot; Back / Biceps</li>
@@ -202,6 +207,13 @@ const WORKOUTS = {
     ['Biceps &ndash; Long Head','Incline Dumbbell Curl','3','10-15','isolation'],
     ['Biceps &ndash; Long Head','Cable Curl (Rope, Behind Body)','3','10-15','isolation'],
     ['Brachialis','Hammer Curl','3','10-15','isolation'],
+  ], rowsAlt:[
+    ['Back &ndash; Lat Pulldown','Wide-Grip Lat Pulldown','4','8-12','compound'],
+    ['Back &ndash; Lat Pulldown','Close-Grip Lat Pulldown (V-Bar)','4','8-12','compound'],
+    ['Back &ndash; Lat Pulldown','Cable Pullover','3','10-15','isolation'],
+    ['Biceps &ndash; Long Head','Incline Dumbbell Curl','3','10-15','isolation'],
+    ['Biceps &ndash; Long Head','Cable Curl (Rope, Behind Body)','3','10-15','isolation'],
+    ['Brachialis','Cross-Body Hammer Curl','3','10-15','isolation'],
   ]},
   1: { tag:'tue', title:'Legs, Shoulders &amp; Traps', rows:[
     ['Legs &ndash; Quads','Barbell Back Squat','4','8-12','compound'],
@@ -212,6 +224,15 @@ const WORKOUTS = {
     ['Shoulders &ndash; Lateral Head','Machine Lateral Raise','3','12-15','isolation'],
     ['Traps','Barbell Shrug','3','10-15','isolation'],
     ['Calves','Standing Calf Raise','3','12-15','isolation'],
+  ], rowsAlt:[
+    ['Legs &ndash; Quads','Barbell Back Squat','4','8-12','compound'],
+    ['Legs &ndash; Quads','Leg Press','4','8-12','compound'],
+    ['Legs &ndash; Quads','Leg Extension','3','12-15','isolation'],
+    ['Shoulders &ndash; Lateral Head','Leaning Cable Lateral Raise','3','12-15','isolation'],
+    ['Shoulders &ndash; Lateral Head','Cable Lateral Raise','3','12-15','isolation'],
+    ['Shoulders &ndash; Lateral Head','Machine Lateral Raise','3','12-15','isolation'],
+    ['Traps','Barbell Shrug','3','10-15','isolation'],
+    ['Calves','Donkey Calf Raise','3','12-15','isolation'],
   ]},
   2: { tag:'wed', title:'Chest (Upper) &amp; Triceps', rows:[
     ['Chest &ndash; Upper Chest','Incline Barbell Bench Press','4','8-12','compound'],
@@ -220,6 +241,13 @@ const WORKOUTS = {
     ['Triceps &ndash; Long Head','Overhead Cable Extension','3','10-15','isolation'],
     ['Triceps &ndash; Long Head','Overhead Dumbbell Extension','3','10-15','isolation'],
     ['Triceps &ndash; Long Head','EZ-Bar Skull Crusher','3','10-15','isolation'],
+  ], rowsAlt:[
+    ['Chest &ndash; Upper Chest','Incline Barbell Bench Press','4','8-12','compound'],
+    ['Chest &ndash; Upper Chest','Incline Dumbbell Press','4','8-12','compound'],
+    ['Chest &ndash; Upper Chest','Low-to-High Cable Fly','3','10-15','isolation'],
+    ['Triceps &ndash; Long Head','Overhead Cable Extension','3','10-15','isolation'],
+    ['Triceps &ndash; Long Head','Overhead Dumbbell Extension','3','10-15','isolation'],
+    ['Triceps &ndash; Long Head','Dumbbell Skull Crusher','3','10-15','isolation'],
   ]},
   3: { tag:'thu', title:'Back &amp; Biceps', rows:[
     ['Back &ndash; Row','Barbell Bent-Over Row','4','8-12','compound'],
@@ -228,6 +256,13 @@ const WORKOUTS = {
     ['Biceps &ndash; Short Head','Barbell Curl','3','10-15','isolation'],
     ['Biceps &ndash; Short Head','Preacher Curl','3','10-15','isolation'],
     ['Brachialis','Reverse-Grip Cable Curl','3','10-15','isolation'],
+  ], rowsAlt:[
+    ['Back &ndash; Row','Barbell Bent-Over Row','4','8-12','compound'],
+    ['Back &ndash; Row','Seated Cable Row','4','8-12','compound'],
+    ['Back &ndash; Row','Chest-Supported T-Bar Row','4','8-12','compound'],
+    ['Biceps &ndash; Short Head','EZ-Bar Curl','3','10-15','isolation'],
+    ['Biceps &ndash; Short Head','Preacher Curl','3','10-15','isolation'],
+    ['Brachialis','Zottman Curl','3','10-15','isolation'],
   ]},
   4: { tag:'fri', title:'Legs, Shoulders &amp; Forearms', rows:[
     ['Legs &ndash; Hamstrings','Romanian Deadlift','4','8-12','compound'],
@@ -239,6 +274,16 @@ const WORKOUTS = {
     ['Forearms &ndash; Brachioradialis','Reverse Curl','3','12-15','isolation'],
     ['Forearms &ndash; Flexors','Wrist Curl','3','15-20','isolation'],
     ['Forearms &ndash; Extensors','Reverse Wrist Curl','3','15-20','isolation'],
+  ], rowsAlt:[
+    ['Legs &ndash; Hamstrings','Romanian Deadlift','4','8-12','compound'],
+    ['Legs &ndash; Hamstrings','Lying Leg Curl','3','10-15','isolation'],
+    ['Calves','Seated Calf Raise','3','12-15','isolation'],
+    ['Shoulders &ndash; Front Deltoid','Barbell Overhead Press','4','8-12','compound'],
+    ['Shoulders &ndash; Rear Deltoid','Cable Rear Delt Fly','3','12-15','isolation'],
+    ['Shoulders &ndash; Rear Deltoid','Face Pull','3','12-15','isolation'],
+    ['Forearms &ndash; Brachioradialis','Reverse Curl','3','12-15','isolation'],
+    ['Forearms &ndash; Flexors','Wrist Curl','3','15-20','isolation'],
+    ['Forearms &ndash; Extensors','Reverse Wrist Curl','3','15-20','isolation'],
   ]},
   5: { tag:'sat', title:'Chest (Mid/Lower) &amp; Triceps', rows:[
     ['Chest &ndash; Middle Chest','Flat Barbell Bench Press','4','8-12','compound'],
@@ -246,6 +291,13 @@ const WORKOUTS = {
     ['Triceps &ndash; Medial Head','Close-Grip Bench Press','4','8-12','compound'],
     ['Chest &ndash; Lower Chest','Decline Cable Fly','3','10-15','isolation'],
     ['Triceps &ndash; Lateral Head','Rope Pushdown','3','10-15','isolation'],
+    ['Triceps &ndash; Lateral Head','Single-Arm Cable Pushdown','3','10-15','isolation'],
+  ], rowsAlt:[
+    ['Chest &ndash; Middle Chest','Flat Barbell Bench Press','4','8-12','compound'],
+    ['Chest &ndash; Middle Chest','Flat Dumbbell Press','4','8-12','compound'],
+    ['Triceps &ndash; Medial Head','Close-Grip Bench Press','4','8-12','compound'],
+    ['Chest &ndash; Lower Chest','Pec-Deck Fly (Low Angle)','3','10-15','isolation'],
+    ['Triceps &ndash; Lateral Head','Overhead Rope Extension','3','10-15','isolation'],
     ['Triceps &ndash; Lateral Head','Single-Arm Cable Pushdown','3','10-15','isolation'],
   ]},
   6: { tag:'rest', title:'Rest Day', rows:[] }
@@ -268,13 +320,24 @@ const TODAY = new Date(_now.getFullYear(), _now.getMonth(), _now.getDate());
 function pad(n){ return n<10 ? '0'+n : ''+n; }
 function isoOf(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; }
 
+// ---------- isolation rotation ----------
+// Compounds (main lifts) never change all program long, so progressive overload
+// carries straight through. 1-2 isolation movements per day swap to a fresh angle
+// at the rotation point below, roughly the 8-week mark, to avoid repetitive stress
+// on the same joint pattern while everything else stays on track.
+const ROTATION_WEEK = 8; // weeks since START before switching to rowsAlt
+const MS_PER_WEEK = 7*24*60*60*1000;
+const ROTATION_DATE = new Date(START.getTime() + ROTATION_WEEK*MS_PER_WEEK);
+
 // build DATA for every date in range
 const DATA = {};
 for(let d = new Date(START); d <= END; d.setDate(d.getDate()+1)){
   const wIdx = (d.getDay()+6)%7; // Monday=0
   const iso = isoOf(d.getFullYear(), d.getMonth(), d.getDate());
   const w = WORKOUTS[wIdx];
-  DATA[iso] = { tag:w.tag, weekday:WEEKDAY_NAMES[wIdx], title:w.title, rows:w.rows };
+  const weeksIn = Math.floor((d - START)/MS_PER_WEEK);
+  const rotated = weeksIn >= ROTATION_WEEK && w.rowsAlt;
+  DATA[iso] = { tag:w.tag, weekday:WEEKDAY_NAMES[wIdx], title:w.title, rows: rotated ? w.rowsAlt : w.rows, rotated: !!rotated };
 }
 
 function buildTabs(){
@@ -336,6 +399,7 @@ function buildMonth(m){
         ${isToday ? '<span class="today-badge"><span class="ping"></span>Today</span>' : ''}
         <span class="num">${d}</span>
         <span class="label">${shortLabel}</span>
+        ${info.rotated ? '<span class="rotate-badge">alt</span>' : ''}
       `;
       cell.addEventListener('click', ()=>openCard(iso));
     }
@@ -386,7 +450,7 @@ function openCard(iso){
         <thead><tr><th>Category</th><th>Exercise (compound &rarr; isolation)</th><th>Sets &times; Reps</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
-      <div class="card-foot">Rest 60&ndash;90s between sets &nbsp;&bull;&nbsp; Same exercises every week &mdash; add weight or reps to progressively overload</div>
+      <div class="card-foot">Rest 60&ndash;90s between sets &nbsp;&bull;&nbsp; ${info.rotated ? 'Rotated isolation variant (from week 8) &mdash; compounds unchanged, keep adding weight or reps' : 'Same exercises every week &mdash; add weight or reps to progressively overload'}</div>
     `;
   }
   overlay.classList.add('open');
